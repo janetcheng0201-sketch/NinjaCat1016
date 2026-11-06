@@ -16,7 +16,7 @@ public class restart : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
-            SceneManager.LoadScene("ch6_GameScene");
+            SceneManager.LoadScene("menu");
         }
     }
 }

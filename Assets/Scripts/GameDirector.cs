@@ -8,18 +8,63 @@ using UnityEngine.UI;
 public class GameDirector : MonoBehaviour
 {
     GameObject hp;
-    public TextMeshProUGUI show;
-    public static float counttime = 0;
 
+    public TextMeshProUGUI show;
+
+    public static float counttime = 0;
     public static bool isGameOver = false;
-    // Start is called before the first frame update
+
+    public float maxHp = 1f;
+    public float currentHp = 1f;
+
+    public Image hpImage;
+
     void Start()
     {
-        Time.timeScale = 1;
-        hp = GameObject.Find("HP");
+        if (hpImage == null)
+        {
+            Debug.LogError("請在 Inspector 指定 HP Image！");
+        }
+
+        Time.timeScale = 1f;
+
+        counttime = 0f;
         isGameOver = false;
+
+        currentHp = maxHp;
+        hpImage.fillAmount = currentHp / maxHp;
+
+        hp = GameObject.Find("HP");
     }
 
+    public void DecreaseHp()
+    {
+        if (isGameOver) return;
+
+        currentHp -= 0.1f;
+        currentHp = Mathf.Clamp(currentHp, 0f, maxHp);
+
+        hpImage.fillAmount = currentHp / maxHp;
+
+        if (currentHp <= 0f)
+        {
+            isGameOver = true;
+            Debug.Log("Game Over!");
+            Time.timeScale = 0f;
+        }
+    }
+
+    public void HealHp()
+    {
+        if (isGameOver) return;
+
+        currentHp += 0.1f;
+        currentHp = Mathf.Clamp(currentHp, 0f, maxHp);
+
+        hpImage.fillAmount = currentHp / maxHp;
+    }
+
+    // 其他原本的程式，例如 Update()、倒數計時等
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -29,27 +74,13 @@ public class GameDirector : MonoBehaviour
         }
         counttime += Time.deltaTime;
         float remainingTime = Mathf.Max(0, 30 - counttime);
-        show.text= (30-counttime).ToString("f1");
-        if(counttime > 30)
+        show.text = (30 - counttime).ToString("f1");
+        if (counttime > 30)
         {
             Time.timeScale = 0;
-        }
-    }
-    // Update is called once per frame
-    public void DecreaseHp()
-    {
-        if (isGameOver) return;
-
-        Image hpImage = hp.GetComponent<Image>();
-        hpImage.fillAmount -= 0.1f;
-
-        // 當血量小於或等於 0 時觸發遊戲結束
-        if (hpImage.fillAmount <= 0)
-        {
-            isGameOver = true;
-            Debug.Log("Game Over!");
-            // 這裡未來如果想顯示 UI 的 Game Over 文字物件，也可以在這裡寫 activate
+            SceneManager.LoadScene("EndScene");
         }
     }
 
+    
 }

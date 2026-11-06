@@ -21,7 +21,7 @@ public class ArrowGenerater : MonoBehaviour
         float remainingTime = 30 - GameDirector.counttime;
         if (remainingTime <= 10)
         {
-            span = 0.3f;  // 每 0.3 秒生成一支
+            span = 0.25f;  // 每 0.3 秒生成一支
         }
         else
         {
